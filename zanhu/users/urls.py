@@ -1,16 +1,14 @@
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+# __author__ = '__Jack__'
+
 from django.urls import path
 
-from zanhu.users.views import (
-    user_list_view,
-    user_redirect_view,
-    user_update_view,
-    user_detail_view,
-)
+from zanhu.users import views
 
-app_name = "users"
+app_name = 'users'
+
 urlpatterns = [
-    path("", view=user_list_view, name="list"),
-    path("~redirect/", view=user_redirect_view, name="redirect"),
-    path("~update/", view=user_update_view, name="update"),
-    path("<str:username>/", view=user_detail_view, name="detail"),
+    path('update/', views.UserUpdateView.as_view(), name='update'),
+    path('<username>/', views.UserDetailView.as_view(), name='detail'),
 ]
