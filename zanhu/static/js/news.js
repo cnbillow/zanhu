@@ -48,17 +48,6 @@ $(function () {
         $('#replyInput').trigger('focus')
     });
 
-    // Counts textarea characters to provide data to user.
-    $("#newsInput").keyup(function () {
-        var charCount = $(this).val().length;
-        $("#newsCounter").text(280 - charCount);
-    });
-
-    $("#replyInput").keyup(function () {
-        var charCount = $(this).val().length;
-        $("#replyCounter").text(280 - charCount);
-    });
-
     $("input, textarea").attr("autocomplete", "off");
 
     $("#postNews").click(function () {
@@ -101,7 +90,7 @@ $(function () {
         // Ajax call on action on like button.
         var li = $(this).closest("li");
         var news = $(li).attr("news-id");
-        payload = {
+        var payload = {
             'news': news,
             'csrf_token': csrftoken
         };

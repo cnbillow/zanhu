@@ -55,35 +55,4 @@
     {% if object.linkedin %}
         <a href="{{ object.linkedin }}" style="font-size: 2em" title="LinkedIn"><i class="fa fa-linkedin"></i> </a>
     {% endif %}
-
-    {% if request.user.username == object.username %}
-        <!-- Data tiles -->
-        <div class="row tile_count">
-            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
-                <p class="fa fa-code"> 动态</p>
-                <div class="count">{{ moments_num }}</div>
-            </div>
-            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
-                <p class="fa fa-key"> 文章</p>
-                <div class="count">{{ article_num }}</div>
-            </div>
-            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
-                <p class="fa fa-comments"> 评论</p>
-                <div class="count">{{ comment_num }}</div>
-            </div>
-            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
-                <p class="fa fa-question-circle"> 提问</p>
-                <div class="count">{{ question_num }}</div>
-            </div>
-            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
-                <p class="fa fa-keyboard-o"> 回答</p>
-                <div class="count">{{ answer_num }}</div>
-            </div>
-            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
-                <p class="fa fa-navicon"> 互动</p>
-                <div class="count">{{ interaction_num }}</div>
-            </div>
-        </div>
-        <!-- /data tiles -->
-    {% endif %}
 {% endblock content %}

@@ -43,7 +43,7 @@ $(function () {
 
     window.onbeforeunload = function () {
         // Small function to run instruction just before closing the session.
-        payload = {
+        var payload = {
             "type": "recieve",
             "sender": currentUser,
             "set_status": "offline"
