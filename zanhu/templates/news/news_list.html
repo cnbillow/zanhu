@@ -28,12 +28,7 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="load">
-                    {% if page_obj.has_next %}
-                        <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">
-                            <img src="{% static 'img/loading.gif' %}" alt="加载中..."></a>
-                    {% endif %}
-                </div>
+                {% include 'pagination.html' %}
                 <!-- 有新的状态时 -->
             </div>
         </div>
