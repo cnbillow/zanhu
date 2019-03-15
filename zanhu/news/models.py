@@ -20,7 +20,7 @@ class News(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name="publisher", on_delete=models.SET_NULL, verbose_name='用户')
     parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.CASCADE, related_name="thread", verbose_name='自关联')
     content = models.TextField(verbose_name='动态内容')
-    liked = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="liked_news", verbose_name='点赞用户')
+    liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_news", verbose_name='点赞用户')
     reply = models.BooleanField(default=False, verbose_name='是否为评论')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
