@@ -96,7 +96,7 @@ class Notification(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f'{self.recipient} {self.uuid_id} {self.verb}')
-        super().save(*args, **kwargs)
+        super(Notification, self).save(*args, **kwargs)
 
     def get_icon(self):
         """根据通知类别，返回通知下拉菜单中的样式"""

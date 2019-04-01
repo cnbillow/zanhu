@@ -19,7 +19,7 @@ class SearchListView(LoginRequiredMixin, ListView):
     template_name = "search/search_results.html"
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(SearchListView, self).get_context_data(*args, **kwargs)
         query = self.request.GET.get("query", "")
         if not query:
             return context

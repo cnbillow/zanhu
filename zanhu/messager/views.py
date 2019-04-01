@@ -22,7 +22,7 @@ class MessagesListView(LoginRequiredMixin, ListView):
     template_name = "messager/message_list.html"
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(MessagesListView, self).get_context_data(*args, **kwargs)
         # 获取除当前登录用户外的所有用户，按最近登录时间降序排列
         context['users_list'] = get_user_model().objects.filter(
             is_active=True).exclude(username=self.request.user).order_by('-last_login')
@@ -41,7 +41,7 @@ class ConversationListView(MessagesListView):
     """与指定用户的私信内容"""
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(ConversationListView, self).get_context_data(*args, **kwargs)
         context['active'] = self.kwargs["username"]
         return context
 

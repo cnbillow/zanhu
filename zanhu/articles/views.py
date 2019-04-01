@@ -5,7 +5,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
-from django.urls import reverse
+from django.urls import reverse_lazy
 
 from django_comments.signals import comment_was_posted
 
@@ -23,7 +23,7 @@ class ArticlesListView(LoginRequiredMixin, ListView):
     template_name = "articles/article_list.html"  # 可省略
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(ArticlesListView, self).get_context_data(*args, **kwargs)
         context['popular_tags'] = Article.objects.get_counted_tags()
         return context
 
@@ -48,12 +48,12 @@ class CreateArticleView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        return super(CreateArticleView, self).form_valid(form)
 
     def get_success_url(self):
         """创建成功后跳转"""
         messages.success(self.request, self.message)  # 消息传递给下一次请求
-        return reverse('articles:list')
+        return reverse_lazy('articles:list')
 
 
 class EditArticleView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):  # 注意类的继承顺序
@@ -65,11 +65,11 @@ class EditArticleView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):  # �
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        return super(EditArticleView, self).form_valid(form)
 
     def get_success_url(self):
         messages.success(self.request, self.message)
-        return reverse('articles:list')
+        return reverse_lazy("articles:article", kwargs={"slug": self.get_object().slug})
 
 
 class DetailArticleView(LoginRequiredMixin, DetailView):

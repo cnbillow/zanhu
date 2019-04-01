@@ -46,12 +46,12 @@
 
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item"><a class="nav-link" href="{% url 'news:list' %}">&nbsp;&nbsp;首页</a></li>&nbsp;&nbsp;
-                <li class="nav-item"><a class="nav-link" href="#">文章</a></li>&nbsp;&nbsp;
-                <li class="nav-item"><a class="nav-link" href="#">问答</a></li>&nbsp;&nbsp;
-                <li class="nav-item"><a class="nav-link" href="#">私信</a></li>&nbsp;&nbsp;
+                <li class="nav-item"><a class="nav-link" href="{% url 'articles:list' %}">文章</a></li>&nbsp;&nbsp;
+                <li class="nav-item"><a class="nav-link" href="{% url 'qa:unanswered_q' %}">问答</a></li>&nbsp;&nbsp;
+                <li class="nav-item"><a class="nav-link" href="{% url 'messager:messages_list' %}">私信</a></li>&nbsp;&nbsp;
             </ul>
 
-            <form role="search" action="#">
+            <form role="search" action="{% url 'haystack_search' %}">
                 <div class="input-group">
                     <input name="q" type="search" id="searchInput" class="form-control" placeholder="搜索" aria-label="Search">
                     <div class="input-group-append">

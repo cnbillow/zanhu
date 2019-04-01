@@ -18,7 +18,7 @@ class BaseUserTestCase(TestCase):
 class TestUserUpdateView(BaseUserTestCase):
 
     def setUp(self):
-        super().setUp()
+        super(TestUserUpdateView, self).setUp()
         self.view = UserUpdateView()
         request = self.factory.get('/fake-url')
         request.user = self.user

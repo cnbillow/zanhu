@@ -16,7 +16,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     slug_url_kwarg = 'username'
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(UserDetailView, self).get_context_data(**kwargs)
         user = User.objects.get(username=self.request.user.username)
         context["moments_num"] = user.publisher.filter(reply=False).count()  # 'publisher'为News表中的related_name
         context["article_num"] = user.author.filter(status='P').count()  # 只算已发表的文章

@@ -34,7 +34,7 @@ class News(models.Model):
         return self.content
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        super(News, self).save(*args, **kwargs)
 
         if not self.reply:
             channel_layer = get_channel_layer()

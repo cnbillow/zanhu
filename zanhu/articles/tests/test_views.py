@@ -62,19 +62,6 @@ class ArticlesViewsTest(TestCase):
         assert response.status_code == 302
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
-    def test_single_article(self):
-        """测试多篇文章发表功能"""
-        current_count = Article.objects.count()
-        response = self.client.post(reverse("articles:write_new"),
-                                    {"title": "这是文章标题2",
-                                     "content": "这是文章内容2",
-                                     "tags": "测试",
-                                     "status": "P",
-                                     "image": self.test_image})
-        assert response.status_code == 302
-        assert Article.objects.count() == current_count + 1
-
-    @override_settings(MEDIA_ROOT=tempfile.gettempdir())
     def test_draft_article(self):
         """测试草稿箱功能"""
         response = self.client.post(reverse("articles:write_new"),

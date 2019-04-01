@@ -25,7 +25,7 @@ class QuestionsListView(LoginRequiredMixin, ListView):
     template_name = "qa/question_list.html"
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(QuestionsListView, self).get_context_data(*args, **kwargs)
         context["popular_tags"] = Question.objects.get_counted_tags()  # 页面的标签功能
         context["active"] = "all"
         return context
@@ -38,7 +38,7 @@ class AnsweredQuestionsListView(QuestionsListView):
         return Question.objects.get_answered()
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(AnsweredQuestionsListView, self).get_context_data(*args, **kwargs)
         context["active"] = "answered"
         return context
 
@@ -50,7 +50,7 @@ class UnansweredQuestionsListView(QuestionsListView):
         return Question.objects.get_unanswered()
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(UnansweredQuestionsListView, self).get_context_data(*args, **kwargs)
         context["active"] = "unanswered"
         return context
 
@@ -70,7 +70,7 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        return super(CreateQuestionView, self).form_valid(form)
 
     def get_success_url(self):
         messages.success(self.request, self.message)
@@ -87,7 +87,7 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
         context_object_name = 'post'
     
         def get_queryset(self):
-            queryset = super().get_queryset()
+            queryset = super(PostUpdateView, self).get_queryset()
             return queryset.filter(created_by=self.request.user)
     
         def form_valid(self, form):
@@ -108,7 +108,7 @@ class CreateAnswerView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.question_id = self.kwargs["question_id"]
-        return super().form_valid(form)
+        return super(CreateAnswerView, self).form_valid(form)
 
     def get_success_url(self):
         messages.success(self.request, self.message)
