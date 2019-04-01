@@ -68,8 +68,7 @@ class Article(models.Model):
         if not self.slug:
             # 根据作者和标题生成文章在URL中的别名
             self.slug = slugify(self.title)
-
-        class ="tab-pane fade show active"Article, self).save( * args, ** kwargs)
+        super(Article, self).save(*args, **kwargs)
 
     def get_markdown(self):
         # 将Markdown文本转换成HTML
