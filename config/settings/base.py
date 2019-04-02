@@ -48,8 +48,6 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True  # 将HTTP请求封装到事务
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
 ROOT_URLCONF = 'config.urls'
-# https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-# WSGI_APPLICATION = 'config.wsgi.application'  # 被ASGI代替
 
 # APPS
 # ------------------------------------------------------------------------------
