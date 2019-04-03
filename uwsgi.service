@@ -1,0 +1,12 @@
+[Unit]
+Description=ncms uWSGI service
+
+[Service]
+ExecStart=/usr/local/python3/bin/uwsgi --emperor /etc/uwsgi
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+NotifyAccess=all
+
+[Install]
+WantedBy=multiuser.target
