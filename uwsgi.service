@@ -1,5 +1,5 @@
 [Unit]
-Description=ncms uWSGI service
+Description=zanhu uWSGI service
 
 [Service]
 ExecStart=/usr/local/python3/bin/uwsgi --emperor /etc/uwsgi
