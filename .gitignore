@@ -50,9 +50,6 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-staticfiles/
-
 # Sphinx documentation
 docs/_build/
 
@@ -332,9 +329,7 @@ pyvenv.cfg
 pip-selfcheck.json
 
 
-### Project template
-zanhu/media/
-
+### Pytest
 .pytest_cache/
 
 ### Pycharm
