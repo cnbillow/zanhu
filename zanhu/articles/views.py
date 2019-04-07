@@ -18,7 +18,7 @@ from zanhu.notifications.views import notification_handler
 class ArticlesListView(LoginRequiredMixin, ListView):
     """已发布的文章列表"""
     model = Article
-    paginate_by = 20
+    paginate_by = 10
     context_object_name = "articles"
     template_name = "articles/article_list.html"  # 可省略
 

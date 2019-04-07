@@ -286,6 +286,10 @@ STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 # Your stuff...
 # ------------------------------------------------------------------------------
 
+# Markdown相关设置 https://neutronx.github.io/django-markdownx/customization/#settings
+MARKDOWNX_UPLOAD_MAX_SIZE = 5 * 1024 * 1024  # 允许上传的最大图片大小为5MB
+MARKDOWNX_IMAGE_MAX_SIZE = {'size': (1000, 1000), 'quality': 100}  # 图片最大为1000*1000, 不压缩
+
 # ASGI server setup
 ASGI_APPLICATION = 'config.routing.application'
 

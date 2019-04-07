@@ -18,7 +18,7 @@ from zanhu.helpers import ajax_required
 
 class MessagesListView(LoginRequiredMixin, ListView):
     model = Message
-    paginate_by = 20
+    paginate_by = 10
     template_name = "messager/message_list.html"
 
     def get_context_data(self, *args, **kwargs):

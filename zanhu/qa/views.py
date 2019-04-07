@@ -20,7 +20,7 @@ from zanhu.notifications.views import notification_handler
 class QuestionsListView(LoginRequiredMixin, ListView):
     """所有问题"""
     model = Question
-    paginate_by = 20
+    paginate_by = 10
     context_object_name = "questions"
     template_name = "qa/question_list.html"
 

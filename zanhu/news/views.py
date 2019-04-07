@@ -17,7 +17,7 @@ from zanhu.news.models import News
 class NewsListView(LoginRequiredMixin, ListView):
     """首页动态"""
     model = News
-    paginate_by = 20
+    paginate_by = 10
     template_name = 'news/news_list.html'
 
     def get_queryset(self, **kwargs):
