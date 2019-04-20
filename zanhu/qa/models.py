@@ -51,8 +51,7 @@ class QuestionQuerySet(models.query.QuerySet):
     def get_counted_tags(self):
         """用字典的形式返回问题的标签和"""
         tag_dict = {}
-        query = self.all().annotate(tagged=models.Count('tags')).filter(tags__gt=0)
-        for obj in query:
+        for obj in self.all():
             for tag in obj.tags.names():
                 if tag not in tag_dict:
                     tag_dict[tag] = 1
