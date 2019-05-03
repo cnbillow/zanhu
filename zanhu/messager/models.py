@@ -24,21 +24,16 @@ class MessageQuerySet(models.query.QuerySet):
         """获取最近一次私信互动的用户"""
         try:
             qs_sent = self.filter(sender=recipient)  # 当前登录用户发送的消息
-            qs_recieved = self.filter(recipient=recipient)  # 当前登录用户接收的消息
-            qs = qs_sent.union(qs_recieved).latest("created_at")  # 最后一条消息
+            qs_received = self.filter(recipient=recipient)  # 当前登录用户接收的消息
+            qs = qs_sent.union(qs_received).latest("created_at")  # 最后一条消息
             if qs.sender == recipient:
                 # 如果登录用户有发送消息，返回消息的接收者
                 return qs.recipient
             # 否则返回消息的发送者
             return qs.sender
-
         except self.model.DoesNotExist:
             # 如果模型实例不存在，则返回当前用户
             return get_user_model().objects.get(username=recipient.username)
-
-    def mark_conversation_as_read(self, sender, recipient):
-        qs = self.filter(sender=sender, recipient=recipient)
-        return qs.update(unread=False)
 
 
 @python_2_unicode_compatible

@@ -83,21 +83,3 @@ class MessagesViewsTests(TestCase):
         assert no_ajax_request.status_code == 400
         assert same_user_request.status_code == 200
         assert no_length_request.status_code == 200
-
-    def test_message_receive_view(self):
-        """接收私信"""
-        request = self.client.get(
-            reverse("messager:receive_message"),
-            {"message_id": self.third_message.uuid_id},
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
-        assert "user02回复给user01的私信" in request.content.decode('utf8')  # utf8解码
-
-    def test_wrong_request_receive_message_view(self):
-        """使用错误的请求方式接收私信"""
-        request = self.client.post(
-            reverse("messager:receive_message"),
-            {"message_id": self.third_message.uuid_id},
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
-        assert request.status_code == 405
