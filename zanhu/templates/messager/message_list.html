@@ -19,7 +19,7 @@
                    class="list-group-item list-group-item-action {% if active == user.username %}active{% endif %}">
                     {% thumbnail user.picture "x45" as im %}
                         <img src="{{ im.url }}" alt="用户头像">
-                    {% empty %}
+                        {% empty %}
                         <img src="{% static 'img/user.png' %}" height="45px" alt="没有头像"/>
                     {% endthumbnail %}
                     {{ user.get_profile_name }}

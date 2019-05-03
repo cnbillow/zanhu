@@ -66,7 +66,7 @@
                            aria-expanded="false">
                             {% thumbnail request.user.picture "x40" as im %}
                                 <img src="{{ im.url }}" style="border-radius: 50%;" alt="用户头像" class="user-image">
-                            {% empty %}
+                                {% empty %}
                                 <img src="{% static 'img/user.png' %}" height="40px" alt="没有头像"/>
                             {% endthumbnail %}
                             {{ request.user.username }}
@@ -111,7 +111,7 @@
     <script src="{% static 'js/jquery-ui.min.js' %}" type="text/javascript"></script>
     <!-- place project specific Javascript in this file -->
     <script src="{% static 'js/zanhu.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/websocketbridge.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/reconnecting-websocket.js' %}" type="text/javascript"></script>
     <script type="text/javascript">
         const currentUser = "{{ request.user.username }}";
     </script>
