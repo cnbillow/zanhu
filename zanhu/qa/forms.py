@@ -9,7 +9,7 @@ from zanhu.qa.models import Question
 
 
 class QuestionForm(forms.ModelForm):
-    status = forms.CharField(widget=forms.HiddenInput())
+    status = forms.CharField(widget=forms.HiddenInput())  # 隐藏
     content = MarkdownxFormField()
 
     class Meta:

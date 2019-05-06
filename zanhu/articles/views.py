@@ -5,20 +5,20 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
-from django.urls import reverse_lazy
+from django.urls import reverse
 
 from django_comments.signals import comment_was_posted
 
-from zanhu.helpers import AuthorRequiredMixin
 from zanhu.articles.models import Article
 from zanhu.articles.forms import ArticleForm
+from zanhu.helpers import AuthorRequiredMixin
 from zanhu.notifications.views import notification_handler
 
 
 class ArticlesListView(LoginRequiredMixin, ListView):
     """已发布的文章列表"""
     model = Article
-    paginate_by = 10
+    paginate_by = 20
     context_object_name = "articles"
     template_name = "articles/article_list.html"  # 可省略
 
@@ -53,7 +53,13 @@ class CreateArticleView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         """创建成功后跳转"""
         messages.success(self.request, self.message)  # 消息传递给下一次请求
-        return reverse_lazy('articles:list')
+        return reverse('articles:list')
+
+
+class DetailArticleView(LoginRequiredMixin, DetailView):
+    """文章详情"""
+    model = Article
+    template_name = 'articles/article_detail.html'
 
 
 class EditArticleView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):  # 注意类的继承顺序
@@ -69,21 +75,15 @@ class EditArticleView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):  # �
 
     def get_success_url(self):
         messages.success(self.request, self.message)
-        return reverse_lazy("articles:article", kwargs={"slug": self.get_object().slug})
-
-
-class DetailArticleView(LoginRequiredMixin, DetailView):
-    """文章详情"""
-    model = Article
-    template_name = 'articles/article_detail.html'
+        return reverse('articles:list')
 
 
 def notify_comment(**kwargs):
     """文章有评论时通知作者"""
     actor = kwargs['request'].user
-    receiver = kwargs['comment'].content_object.user
     obj = kwargs['comment'].content_object
-    notification_handler(actor, receiver, 'C', obj)
+
+    notification_handler(actor, obj.user, 'C', obj)
 
 
-comment_was_posted.connect(receiver=notify_comment)  # 使用django_comments的信号机制
+comment_was_posted.connect(receiver=notify_comment)

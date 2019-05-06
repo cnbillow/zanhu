@@ -74,7 +74,8 @@ class NotificationsModelsTest(TestCase):
         Notification.objects.mark_all_as_read()
         obj = News.objects.create(
             user=self.user,
-            content="内容示例"
+            content="内容示例",
+            reply=True
         )
-        notification_handler(self.user, self.other_user, "C", obj)
+        notification_handler(self.other_user, self.user, "C", obj)  # other_user评论了user
         assert Notification.objects.unread().count() == 1

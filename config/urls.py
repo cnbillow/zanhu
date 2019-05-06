@@ -17,18 +17,17 @@ urlpatterns = [
                   path('accounts/', include('allauth.urls')),
 
                   # 第三方应用
-                  path('comments/', include('django_comments.urls')),
                   path('markdownx/', include('markdownx.urls')),
+                  path('comments/', include('django_comments.urls')),
                   path('search/', include('haystack.urls')),
 
                   # 开发的应用
-                  path('notifications/', include('notifications.urls', namespace='notifications')),
-                  path('articles/', include('articles.urls', namespace='articles')),
                   path('news/', include('news.urls', namespace='news')),
-                  path('messages/', include('messager.urls', namespace='messages')),
+                  path('articles/', include('articles.urls', namespace='articles')),
                   path('qa/', include('qa.urls', namespace='qa')),
+                  path('messages/', include('messager.urls', namespace='messages')),
+                  path('notifications/', include('notifications.urls', namespace='notifications')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 
 if settings.DEBUG:
     # DEBUG=True的时候可以调试出错页面

@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # __author__ = '__Jack__'
 
+
 from __future__ import unicode_literals
 import uuid
 
@@ -46,7 +47,9 @@ class Message(models.Model):
                                   blank=True, null=True, on_delete=models.SET_NULL, verbose_name='接受者')
     message = models.TextField(blank=True, null=True, verbose_name='内容')
     unread = models.BooleanField(default=True, db_index=True, verbose_name='是否未读')
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')  # 没有updated_at，私信发送之后不能修改或撤回
+
     objects = MessageQuerySet.as_manager()
 
     class Meta:

@@ -25,6 +25,9 @@ class NewsModelsTest(TestCase):
             parent=self.first_news
         )
 
+    def test__str__(self):
+        self.assertEqual(self.first_news.__str__(), "第一条动态")
+
     def test_reply_this(self):
         """测试回复功能"""
         initial_count = News.objects.count()

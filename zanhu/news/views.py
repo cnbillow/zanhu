@@ -17,7 +17,7 @@ from zanhu.news.models import News
 class NewsListView(LoginRequiredMixin, ListView):
     """首页动态"""
     model = News
-    paginate_by = 10
+    paginate_by = 20
     template_name = 'news/news_list.html'
 
     def get_queryset(self, **kwargs):
@@ -80,10 +80,9 @@ def get_thread(request):
 @require_http_methods(["POST"])
 def post_comment(request):
     """评论，AJAX POST请求"""
-    post = request.POST['reply']
+    post = request.POST['reply'].strip()
     parent_id = request.POST['parent']
     parent = News.objects.get(pk=parent_id)
-    post = post.strip()
     if post:
         parent.reply_this(request.user, post)
         return JsonResponse({'comments': parent.comment_count()})
@@ -98,5 +97,4 @@ def update_interactions(request):
     """更新互动信息"""
     data_point = request.POST['id_value']
     news = News.objects.get(pk=data_point)
-    data = {'likes': news.count_likers(), 'comments': news.comment_count()}
-    return JsonResponse(data)
+    return JsonResponse({'likes': news.count_likers(), 'comments': news.comment_count()})

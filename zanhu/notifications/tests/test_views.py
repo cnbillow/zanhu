@@ -9,7 +9,7 @@ from test_plus.test import TestCase
 from zanhu.notifications.models import Notification
 
 
-class NewsViewsTest(TestCase):
+class NotificationsViewsTest(TestCase):
 
     def setUp(self):
         self.user = self.make_user("user01")

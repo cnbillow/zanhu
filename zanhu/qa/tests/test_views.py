@@ -47,11 +47,13 @@ class TestQuestionListView(BaseQATest):
         response = self.get(views.QuestionListView, request=self.request)
 
         self.assertEqual(response.status_code, 200)
-        # 方式一
-        self.assertQuerysetEqual(response.context_data['questions'], map(repr, [self.question_one, self.question_two]), ordered=False)
-        # 方式二
+
+        self.assertQuerysetEqual(response.context_data['questions'],
+                                 map(repr, [self.question_one, self.question_two]), ordered=False)
+
         self.assertTrue(all(a == b for a, b in zip(response.context_data['questions'], Question.objects.all())))
 
+        self.assertContext('popular_tags', Question.objects.get_counted_tags())
         self.assertContext('active', 'all')
 
 
@@ -60,7 +62,7 @@ class TestAnsweredQuestionListView(BaseQATest):
 
     def test_context_data(self):
         response = self.get(views.AnsweredQuestionListView, request=self.request)  # 方式一
-        # response = views.AnsweredQuestionListView.as_view()(request)  # 方式二
+        # response = views.AnsweredQuestionListView.as_view()(self.request)  # 方式二
 
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(response.context_data['questions'], [repr(self.question_two)])
@@ -72,8 +74,7 @@ class TestUnansweredQuestionListView(BaseQATest):
     """测试未回答问题列表"""
 
     def test_context_data(self):
-        response = self.get(views.UnansweredQuestionListView, request=self.request)
-
+        response = self.get(views.UnansweredQuestionListView, request=self.request)  # 方式一
         self.assertEqual(response.status_code, 200)  # 或者 self.response_200(response)
         self.assertQuerysetEqual(response.context_data['questions'], [repr(self.question_one)])
         self.assertContext('active', 'unanswered')
@@ -83,7 +84,7 @@ class TestCreateQuestionView(BaseQATest):
     """测试创建问题"""
 
     def test_get(self):
-        response = self.get(views.CreateQuestionView, request=self.request, pk=self.question_one.id)
+        response = self.get(views.CreateQuestionView, request=self.request)
         self.response_200(response)
 
         self.assertContains(response, '标题')
@@ -96,24 +97,22 @@ class TestCreateQuestionView(BaseQATest):
         data = {'title': 'title', 'content': 'content', 'tags': 'tag1,tag2', 'status': 'O'}
         request = RequestFactory().post('/fake-url', data=data)
         request.user = self.user
-
         # RequestFactory测试含有django.contrib.messages的视图 https://code.djangoproject.com/ticket/17971
         setattr(request, 'session', 'session')
         messages = FallbackStorage(request)
         setattr(request, '_messages', messages)
 
         response = self.post(views.CreateQuestionView, request=request)
-
         assert response.status_code == 302
-        assert response.url == '/qa/'  # def get_success_url(self):
+        assert response.url == '/qa/'
 
 
 class TestQuestionDetailView(BaseQATest):
     """测试问题详情"""
 
-    def test_context_data(self):
-        response = self.get(views.QuestionDetailView, request=self.request, pk=self.question_one.id)
-
+    def get_context_data(self):
+        response = self.get(views.QuestionDetailView, request=self.request,
+                            pk=self.question_one.id)
         self.response_200(response)
         self.assertEqual(response.context_data['question'], self.question_one)
 
@@ -122,29 +121,27 @@ class TestCreateAnswerView(BaseQATest):
     """测试创建回答"""
 
     def test_get(self):
-        response = self.get(views.CreateAnswerView, request=self.request, question_id=self.question_one.id)
+        response = self.get(views.CreateAnswerView, request=self.request,
+                            question_id=self.question_one.id)
         self.response_200(response)
         self.assertContains(response, '编辑')
         self.assertContains(response, '预览')
         self.assertIsInstance(response.context_data['view'], views.CreateAnswerView)
 
-    def test_post(self):
+    def get_post(self):
         request = RequestFactory().post('/fake-url', data={'content': 'content'})
         request.user = self.user
-
         # RequestFactory测试含有django.contrib.messages的视图 https://code.djangoproject.com/ticket/17971
         setattr(request, 'session', 'session')
         messages = FallbackStorage(request)
         setattr(request, '_messages', messages)
 
-        response = self.post(views.CreateAnswerView, request=request, question_id=self.question_one.id)
-
+        response = self.post(views.CreateAnswerView, request=request)
         assert response.status_code == 302
-        assert response.url == f'/qa/question-detail/{self.question_one.id}/'
+        assert response.url == f'/qa/question-detail/{self.question_one.id}'
 
 
 class TestQAVote(BaseQATest):
-    """"""
 
     def setUp(self):
         super(TestQAVote, self).setUp()
@@ -156,7 +153,6 @@ class TestQAVote(BaseQATest):
 
     def test_question_upvote(self):
         """赞同问题"""
-
         self.request.POST['question'] = self.question_one.id
         self.request.POST['value'] = 'U'
 
@@ -167,7 +163,6 @@ class TestQAVote(BaseQATest):
 
     def test_question_downvote(self):
         """反对问题"""
-
         self.request.POST['question'] = self.question_two.id
         self.request.POST['value'] = 'D'
 
@@ -177,8 +172,7 @@ class TestQAVote(BaseQATest):
         assert json.loads(response.content)['votes'] == -1
 
     def test_answer_upvote(self):
-        """赞同回答"""
-
+        """赞同问答"""
         self.request.POST['answer'] = self.answer.uuid_id
         self.request.POST['value'] = 'U'
 
@@ -189,7 +183,6 @@ class TestQAVote(BaseQATest):
 
     def test_answer_downvote(self):
         """反对回答"""
-
         self.request.POST['answer'] = self.answer.uuid_id
         self.request.POST['value'] = 'D'
 
@@ -200,14 +193,15 @@ class TestQAVote(BaseQATest):
 
     def test_accept_answer(self):
         """接受回答"""
+
         self.request.user = self.user  # self.user是提问者
         self.request.POST['answer'] = self.answer.uuid_id
-        self.request.POST['value'] = 'D'
 
         response = views.accept_answer(self.request)
 
         assert response.status_code == 200
         assert json.loads(response.content)['status'] == 'true'
+
 
 # from django.test import Client
 # from django.urls import reverse
@@ -319,3 +313,12 @@ class TestQAVote(BaseQATest):
 #             {"answer": self.answer.uuid_id},
 #             HTTP_X_REQUESTED_WITH="XMLHttpRequest")
 #         assert response_one.status_code == 200
+
+"""
+使用TestClient和RequestFactory测试视图的区别
+TestClient: 走Django框架的整个请求响应流程，经过WSGI handler、中间件、URL路由、
+上下文处理器，返回response，更像是集成测试。特点：使用简单，测试一步到位。
+测试用例运行慢，依赖于中间件、URL路由等其它部分
+
+RequestFactory: 生成WSGIRequest供使用，与Django代码无关，单元测试的最佳实践，但使用难度高
+"""

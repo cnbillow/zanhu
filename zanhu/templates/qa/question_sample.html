@@ -10,7 +10,7 @@
         </div>
         <div>
             <h4 class="card-title">
-                <a href="{% url 'qa:question_detail' question.pk %}">{{ question.title }}</a>
+                <a href="{% url 'qa:question_detail' question.id %}">{{ question.title }}</a>
             </h4>
             <p>{{ question.get_markdown|safe|truncatechars:100 }}</p>
             <div class="question-user pull-right">

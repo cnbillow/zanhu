@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 # __author__ = '__Jack__'
+
 from __future__ import unicode_literals
 
 from django.utils.encoding import python_2_unicode_compatible
@@ -47,7 +48,7 @@ class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, related_name="author", on_delete=models.SET_NULL, verbose_name='作者')
     image = models.ImageField(upload_to='articles_pictures/%Y/%m/%d/', verbose_name='文章图片')
     slug = models.SlugField(max_length=80, null=True, blank=True, verbose_name='(URL)别名')
-    status = models.CharField(max_length=1, choices=STATUS, default='D', verbose_name='动态')  # 默认存入草稿箱
+    status = models.CharField(max_length=1, choices=STATUS, default='D', verbose_name='状态')  # 默认存入草稿箱
     content = MarkdownxField(verbose_name='内容')
     edited = models.BooleanField(default=False, verbose_name='是否可编辑')
     tags = TaggableManager(help_text='多个标签使用,(英文)隔开', verbose_name='标签')

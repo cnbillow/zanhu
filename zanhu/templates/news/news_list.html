@@ -17,19 +17,23 @@
                 {% include 'news/news_form_modal.html' %}
                 {% include 'news/news_thread_modal.html' %}
                 <div class="mb-2"></div>
+
                 <!-- 有新的状态时 -->
                 <div class="stream-update">
                     <a href="{% url 'news:list' %}"><span class="new-posts"></span>以下是新的动态</a>
                 </div>
+                <!-- 有新的状态时 -->
+
                 <div class="infinite-container">
                     <ul class="stream">
+
                         {% for news in news_list %}
                             {% include 'news/news_single.html' with news=news %}
                         {% endfor %}
                     </ul>
                 </div>
                 {% include 'pagination.html' %}
-                <!-- 有新的状态时 -->
+
             </div>
         </div>
     </div>

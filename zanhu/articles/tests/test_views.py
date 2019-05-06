@@ -12,17 +12,17 @@ from django.test import override_settings
 from zanhu.articles.models import Article
 
 
-def get_temp_img():
-    """什么临时图片文件并打开"""
-    size = (200, 200)
-    color = (255, 0, 0, 0)
-    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
-        image = Image.new("RGB", size, color)
-        image.save(f, "PNG")
-    return open(f.name, mode="rb")
-
-
 class ArticlesViewsTest(TestCase):
+
+    @staticmethod
+    def get_temp_img():
+        """什么临时图片文件并打开"""
+        size = (200, 200)
+        color = (255, 0, 0, 0)
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
+            image = Image.new("RGB", size, color)
+            image.save(f, "PNG")
+        return open(f.name, mode="rb")
 
     def setUp(self):
         """初始化操作"""
@@ -34,7 +34,7 @@ class ArticlesViewsTest(TestCase):
             status="P",
             user=self.user,
         )
-        self.test_image = get_temp_img()
+        self.test_image = self.get_temp_img()
 
     def tearDown(self):
         """测试结束时关闭临时文件"""
@@ -62,6 +62,19 @@ class ArticlesViewsTest(TestCase):
         assert response.status_code == 302
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
+    def test_single_article(self):
+        """测试多篇文章发表功能"""
+        current_count = Article.objects.count()
+        response = self.client.post(reverse("articles:write_new"),
+                                    {"title": "这是文章标题2",
+                                     "content": "这是文章内容2",
+                                     "tags": "测试",
+                                     "status": "P",
+                                     "image": self.test_image})
+        assert response.status_code == 302
+        assert Article.objects.count() == current_count + 1
+
+    @override_settings(MEDIA_ROOT=tempfile.gettempdir())
     def test_draft_article(self):
         """测试草稿箱功能"""
         response = self.client.post(reverse("articles:write_new"),
@@ -73,4 +86,4 @@ class ArticlesViewsTest(TestCase):
         resp = self.client.get(reverse("articles:drafts"))
         assert resp.status_code == 200
         assert response.status_code == 302
-        assert resp.context["articles"][0].slug == "testuser-cao-gao-wen-zhang"
+        assert resp.context["articles"][0].slug == "cao-gao-wen-zhang"

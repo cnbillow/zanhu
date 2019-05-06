@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # __author__ = '__Jack__'
 
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.contrib import messages
 from django.http import JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -17,55 +17,50 @@ from zanhu.qa.forms import QuestionForm
 from zanhu.notifications.views import notification_handler
 
 
-class QuestionsListView(LoginRequiredMixin, ListView):
-    """所有问题"""
+class QuestionListView(LoginRequiredMixin, ListView):
+    """所有问题页"""
+
     model = Question
     paginate_by = 10
     context_object_name = "questions"
     template_name = "qa/question_list.html"
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(QuestionsListView, self).get_context_data(*args, **kwargs)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(QuestionListView, self).get_context_data()
         context["popular_tags"] = Question.objects.get_counted_tags()  # 页面的标签功能
         context["active"] = "all"
         return context
 
 
-class AnsweredQuestionsListView(QuestionsListView):
-    """已回答的问题，继承自QuestionsListView"""
+class AnsweredQuestionListView(QuestionListView):
+    """已有采纳答案的问题"""
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
         return Question.objects.get_answered()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(AnsweredQuestionsListView, self).get_context_data(*args, **kwargs)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AnsweredQuestionListView, self).get_context_data()
         context["active"] = "answered"
         return context
 
 
-class UnansweredQuestionsListView(QuestionsListView):
-    """未回答的问题，继承自QuestionsListView"""
+class UnansweredQuestionListView(QuestionListView):
+    """已有采纳答案的问题"""
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
         return Question.objects.get_unanswered()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(UnansweredQuestionsListView, self).get_context_data(*args, **kwargs)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(UnansweredQuestionListView, self).get_context_data()
         context["active"] = "unanswered"
         return context
 
 
-class QuestionDetailView(LoginRequiredMixin, DetailView):
-    """问题详情"""
-    model = Question
-    context_object_name = "question"
-    template_name = 'qa/question_detail.html'
-
-
 class CreateQuestionView(LoginRequiredMixin, CreateView):
-    """提出问题"""
+    """用户提问"""
+
     form_class = QuestionForm
-    template_name = "qa/question_form.html"
+    template_name = 'qa/question_form.html'
     message = "问题已提交！"
 
     def form_valid(self, form):
@@ -74,45 +69,32 @@ class CreateQuestionView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         messages.success(self.request, self.message)
-        return reverse("qa:unanswered_q")
+        return reverse_lazy("qa:unanswered_q")
 
-    """
-    用如下方式改写form_valid()
-    @method_decorator(login_required, name='dispatch')
-    class PostUpdateView(UpdateView):
-        model = Post
-        fields = ('message',)
-        template_name = 'boards/edit_post.html'
-        pk_url_kwarg = 'post_pk'
-        context_object_name = 'post'
-    
-        def get_queryset(self):
-            queryset = super(PostUpdateView, self).get_queryset()
-            return queryset.filter(created_by=self.request.user)
-    
-        def form_valid(self, form):
-            post = form.save(commit=False)
-            post.updated_by = self.request.user
-            post.save()
-            return redirect('post_topic', pk=post.topic.board.pk, topic_pk=post.topic.pk)
-    """
+
+class QuestionDetailView(LoginRequiredMixin, DetailView):
+    """问题详情页"""
+
+    model = Question
+    context_object_name = 'question'
+    template_name = 'qa/question_detail.html'
 
 
 class CreateAnswerView(LoginRequiredMixin, CreateView):
     """回答问题"""
     model = Answer
-    fields = ["content", ]
-    message = "您的回答已提交"
+    fields = ['content', ]
+    message = '您的问题已提交'
     template_name = 'qa/answer_form.html'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.question_id = self.kwargs["question_id"]
+        form.instance.question_id = self.kwargs['question_id']
         return super(CreateAnswerView, self).form_valid(form)
 
     def get_success_url(self):
         messages.success(self.request, self.message)
-        return reverse("qa:question_detail", kwargs={"pk": self.kwargs["question_id"]})
+        return reverse_lazy('qa:question_detail', kwargs={"pk": self.kwargs['question_id']})
 
 
 @login_required
@@ -131,17 +113,18 @@ def question_vote(request):
         question.votes.update_or_create(user=request.user, defaults={"value": value})
 
     """
-    # 用户首次操作，点赞/点踩
+    # 1.用户首次操作，点赞/踩
     if request.user.pk not in users:
         question.votes.update_or_create(user=request.user, defaults={"value": value})
 
-    # 用户已近赞过，要取消赞/踩一下
+    # 2.用户已近赞过，要取消赞/踩一下
     elif question.votes.get(user=request.user).value:
         if value:
             question.votes.get(user=request.user).delete()
         else:
             question.votes.update_or_create(user=request.user, defaults={"value": value})
-    # 用户已踩过，取消踩/赞一下
+
+    # 3.用户已踩过，取消踩/赞一下
     else:
         if not value:
             question.votes.get(user=request.user).delete()
@@ -176,11 +159,11 @@ def answer_vote(request):
 def accept_answer(request):
     """
     接受回答，AJAX POST请求
-    已近被接受的回答用户不能取消
+    已经被接受的回答用户不能取消
     """
     answer_id = request.POST["answer"]
-    answer = Answer.objects.get(uuid_id=answer_id)
-    # 如果当前登录用户不是提问者，排除权限拒绝错误
+    answer = Answer.objects.get(pk=answer_id)
+    # 如果当前登录用户不是提问者，抛出权限拒绝错误
     if answer.question.user.username != request.user.username:
         raise PermissionDenied
     answer.accept_answer()
