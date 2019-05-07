@@ -51,7 +51,7 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'messager:messages_list' %}">私信</a></li>&nbsp;&nbsp;
             </ul>
 
-            <form role="search" action="#">
+            <form role="search" action="{% url 'haystack_search' %}">
                 <div class="input-group">
                     <input name="q" type="search" id="searchInput" class="form-control" placeholder="搜索" aria-label="Search">
                     <div class="input-group-append">
