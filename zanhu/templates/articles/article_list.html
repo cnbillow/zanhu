@@ -41,8 +41,8 @@
                     {% empty %}
                     <h4 class="no-data"><a href="{% url 'articles:write_new' %}">快来成为第一个写文章的吧！</a></h4>
                 {% endfor %}
+                {% include 'pagination.html' %}
             </div>
-            {% include 'pagination.html' %}
 
             <!-- Sidebar Widgets Column -->
             <div class="col-md-4">
