@@ -27,7 +27,7 @@
                 <!-- 文章图片 -->
                 {% thumbnail article.image "1920x1080" as im %}
                     <img src="{{ im.url }}" alt="文章图片" class="card-img-top">
-                {% empty %}
+                    {% empty %}
                     <img class="img-fluid rounded" src="http://placehold.it/1920x1080" alt="Card Image">
                 {% endthumbnail %}
                 <hr>
@@ -42,7 +42,13 @@
                             {% get_comment_form for article as form %}
                             <form action="{% comment_form_target %}" method="POST">
                                 {% csrf_token %}
-                                {{ form|crispy }}
+                                <div id="id_comment" class="form-group">
+                                    <textarea name="comment" rows="5" maxlength="400" class="textarea form-control"></textarea>
+                                </div>
+                                {{ form.content_type }}
+                                {{ form.object_pk }}
+                                {{ form.timestamp }}
+                                {{ form.security_hash }}
                                 <input type="hidden" name="next" value="{% url 'articles:article' article.slug %}"/>
                                 <input class="btn btn-info" type="submit" value="提交" id="id_submit"/>
                             </form>
@@ -56,7 +62,7 @@
                     <div class="media mb-4">
                         {% thumbnail comment.user.picture "x50" as im %}
                             <img class="d-flex mr-3 rounded-circle" src="{{ im.url }}" alt="用户头像" id="pic"/>
-                        {% empty %}
+                            {% empty %}
                             <img class="d-flex mr-3 rounded-circle" src="{% static 'img/user.png' %}" height="50px" alt="没有头像"/>
                         {% endthumbnail %}
                         <div class="media-body">
