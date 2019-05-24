@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
     'markdownx',
     'taggit',
     'haystack',
+    'djcelery_email',
 ]
 LOCAL_APPS = [
     'users.apps.UsersConfig',
