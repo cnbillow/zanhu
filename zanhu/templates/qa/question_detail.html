@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static humanize %}
+{% load static %}
 
 {% block title %}{{ question.title }}{% endblock %}
 
@@ -40,7 +40,7 @@
             <p>{{ question.get_markdown|safe }}</p>
             <div class="question-user pull-right">
                 <a href="{% url 'users:detail' question.user.username %}">{{ question.user.get_profile_name }} </a>
-                <span class="text-secondary"> {{ question.created_at|naturaltime }}提问</span>
+                <span class="text-secondary"> {{ question.created_at|timesince }}之前提问</span>
                 {% if question.tags.names %}
                     {% for tag in question.tags.names %}
                         <span class="badge badge-primary">{{ tag }}</span>

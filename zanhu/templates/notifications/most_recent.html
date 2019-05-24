@@ -1,4 +1,4 @@
-{% load static humanize thumbnail %}
+{% load static thumbnail %}
 
 <ul>
     {% if notifications %}
@@ -24,7 +24,7 @@
             {% endif %}
             </span>
 
-            <p>{{ notification }}&nbsp;{{ notification.created_at|naturaltime }}</p>
+            <p>{{ notification }}&nbsp;{{ notification.created_at|timesince }}之前</p>
         {% endfor %}
 
         <a type="button" class="btn-sm btn-dark text-center" href="{% url 'notifications:unread' %}">查看所有</a>

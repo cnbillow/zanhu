@@ -1,4 +1,4 @@
-{% load static humanize thumbnail %}
+{% load static thumbnail %}
 
 {% for reply in thread %}
     <li class="card" news-id="{{ reply.uuid_id }}">
@@ -36,7 +36,7 @@
             <a href="#" class="comment"><i class="fa fa-comment-o" aria-hidden="true"></i>
                 <span class="comment-count">{{ news.comment_count }}</span>
             </a>
-            <span class="timestamp">{{ reply.created_at|naturaltime }}</span>
+            <span class="timestamp">{{ reply.created_at|timesince }}之前</span>
         </div>
     </li>
 {% endfor %}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static humanize thumbnail %}
+{% load static thumbnail %}
 
 {% block title %}通知 - {{ block.super }}{% endblock %}
 
@@ -36,7 +36,7 @@
                             {% endif %}
                         </p>
                         <div class="notification-meta">
-                            <small class="timestamp">{{ notification.created_at|naturaltime }}</small>
+                            <small class="timestamp">{{ notification.created_at|timesince }}之前</small>
                         </div>
                     </div>
                 </div>

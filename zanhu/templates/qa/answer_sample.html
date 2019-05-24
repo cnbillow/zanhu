@@ -1,4 +1,4 @@
-{% load static humanize thumbnail %}
+{% load static thumbnail %}
 
 <div class="row answer" answer-id="{{ answer.uuid_id }}">
     {% csrf_token %}
@@ -24,7 +24,7 @@
                     <img src="{% static 'img/user.png' %}" class="pull-left" height="50px" alt="没有头像"/>
                 {% endthumbnail %}
                 <a href="{% url 'users:detail' answer.user.username %}" class="username">{{ answer.user.get_profile_name }}</a>
-                <small class="answered">回答于 {{ answer.created_at|naturaltime }}</small>
+                <small class="answered">回答于 {{ answer.created_at|timesince }}之前</small>
             </div>
         </div>
         <div class="answer-description">
