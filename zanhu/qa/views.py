@@ -22,7 +22,7 @@ from zanhu.notifications.views import notification_handler
 class QuestionListView(LoginRequiredMixin, ListView):
     """所有问题页"""
 
-    model = Question
+    queryset = Question.objects.select_related('user')
     paginate_by = 10
     context_object_name = "questions"
     template_name = "qa/question_list.html"
@@ -81,6 +81,9 @@ class QuestionDetailView(LoginRequiredMixin, DetailView):
     model = Question
     context_object_name = 'question'
     template_name = 'qa/question_detail.html'
+
+    def get_queryset(self):
+        return Question.objects.select_related('user').filter(pk=self.kwargs['pk'])
 
 
 @method_decorator(cache_page(60 * 60), name='get')

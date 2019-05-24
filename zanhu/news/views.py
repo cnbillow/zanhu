@@ -21,7 +21,7 @@ class NewsListView(LoginRequiredMixin, ListView):
     template_name = 'news/news_list.html'
 
     def get_queryset(self, **kwargs):
-        return News.objects.filter(reply=False)
+        return News.objects.filter(reply=False).select_related('user', 'parent').prefetch_related('liked')
 
 
 class NewsDeleteView(LoginRequiredMixin, AuthorRequiredMixin, DeleteView):
@@ -64,7 +64,7 @@ def like(request):
 def get_thread(request):
     """返回动态的评论，AJAX GET请求"""
     news_id = request.GET['news']
-    news = News.objects.get(pk=news_id)
+    news = News.objects.select_related('user').get(pk=news_id)  # 不是.get(pk=news_id).select_related('user')
     # render_to_string()表示加载模板，填充数据，返回字符串
     news_html = render_to_string("news/news_single.html", {"news": news})  # 没有评论的时候
     thread_html = render_to_string("news/news_thread.html", {"thread": news.get_thread()})  # 有评论的时候

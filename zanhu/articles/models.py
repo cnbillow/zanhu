@@ -21,11 +21,11 @@ class ArticleQuerySet(models.query.QuerySet):
 
     def get_published(self):
         """返回已发表的文章"""
-        return self.filter(status="P")
+        return self.filter(status="P").select_related('user')
 
     def get_drafts(self):
         """返回草稿箱的文章"""
-        return self.filter(status="D")
+        return self.filter(status="D").select_related('user')
 
     def get_counted_tags(self):
         """统计所有已发布的文章中，每一个标签的数量(大于0的)"""
@@ -52,7 +52,7 @@ class Article(models.Model):
     content = MarkdownxField(verbose_name='内容')
     edited = models.BooleanField(default=False, verbose_name='是否可编辑')
     tags = TaggableManager(help_text='多个标签使用,(英文)隔开', verbose_name='标签')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    created_at = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
     objects = ArticleQuerySet.as_manager()
 

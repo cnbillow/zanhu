@@ -64,6 +64,9 @@ class DetailArticleView(LoginRequiredMixin, DetailView):
     model = Article
     template_name = 'articles/article_detail.html'
 
+    def get_queryset(self):
+        return Article.objects.select_related('user').filter(slug=self.kwargs['slug'])
+
 
 class EditArticleView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):  # 注意类的继承顺序
     """编辑文章"""

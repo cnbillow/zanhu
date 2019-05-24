@@ -47,11 +47,11 @@ class QuestionQuerySet(models.query.QuerySet):
 
     def get_answered(self):
         """已有答案的问题"""
-        return self.filter(has_answer=True)
+        return self.filter(has_answer=True).select_related('user')
 
     def get_unanswered(self):
         """未被的回答的问题"""
-        return self.filter(has_answer=False)
+        return self.filter(has_answer=False).select_related('user')
 
     def get_counted_tags(self):
         """统计所有问题标签的数量(大于0的)"""
@@ -80,7 +80,7 @@ class Question(models.Model):
     tags = TaggableManager(help_text='多个标签使用,(英文)隔开', verbose_name='标签')
     has_answer = models.BooleanField(default=False, verbose_name="接受回答")  # 是否有接受的回答
     votes = GenericRelation(Vote, verbose_name='投票情况')  # 通过GenericRelation关联到Vote表，不是实际的字段
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    created_at = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     objects = QuestionQuerySet.as_manager()
@@ -108,7 +108,7 @@ class Question(models.Model):
 
     def get_answers(self):
         """获取所有的回答"""
-        return Answer.objects.filter(question=self)  # self作为参数，当前的问题有多少个回答
+        return Answer.objects.filter(question=self).select_related('user', 'question')  # self作为参数，当前的问题有多少个回答
 
     def count_answers(self):
         """回答的数量"""
@@ -116,11 +116,11 @@ class Question(models.Model):
 
     def get_upvoters(self):
         """赞同的用户"""
-        return [vote.user for vote in self.votes.filter(value=True)]
+        return [vote.user for vote in self.votes.filter(value=True).select_related('user').prefecth_related('vote')]
 
     def get_downvoters(self):
         """反对的用户"""
-        return [vote.user for vote in self.votes.filter(value=False)]
+        return [vote.user for vote in self.votes.filter(value=False).select_related('user').prefecth_related('vote')]
 
 
 @python_2_unicode_compatible
@@ -132,7 +132,7 @@ class Answer(models.Model):
     content = MarkdownxField(verbose_name='内容')
     is_answer = models.BooleanField(default=False, verbose_name='回答是否被接受')
     votes = GenericRelation(Vote, verbose_name='投票情况')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    created_at = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:
@@ -153,11 +153,11 @@ class Answer(models.Model):
 
     def get_upvoters(self):
         """赞同的用户"""
-        return [vote.user for vote in self.votes.filter(value=True)]
+        return [vote.user for vote in self.votes.filter(value=True).select_related('user').prefecth_related('vote')]
 
     def get_downvoters(self):
         """反对的用户"""
-        return [vote.user for vote in self.votes.filter(value=False)]
+        return [vote.user for vote in self.votes.filter(value=False).select_related('user').prefecth_related('vote')]
 
     def accept_answer(self):
         """接受回答"""

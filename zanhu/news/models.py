@@ -25,7 +25,7 @@ class News(models.Model):
     content = models.TextField(verbose_name='动态内容')
     liked = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_news', verbose_name='点赞用户')
     reply = models.BooleanField(default=False, verbose_name='是否为评论')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    created_at = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:

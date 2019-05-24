@@ -20,10 +20,10 @@ from slugify import slugify
 class NotificationQuerySet(models.query.QuerySet):
 
     def unread(self):
-        return self.filter(unread=True)
+        return self.filter(unread=True).select_related('actor', 'recipient')
 
     def read(self):
-        return self.filter(unread=False)
+        return self.filter(unread=False).select_related('actor', 'recipient')
 
     def mark_all_as_read(self, recipient=None):
         """标为已读，可以传入接收者参数"""
@@ -74,7 +74,7 @@ class Notification(models.Model):
     unread = models.BooleanField(default=True, verbose_name='未读')
     slug = models.SlugField(max_length=80, null=True, blank=True, verbose_name='(URL)别名')
     verb = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, verbose_name="通知类别")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    created_at = models.DateTimeField(db_index=True, auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     content_type = models.ForeignKey(ContentType, related_name='notify_action_object', null=True, blank=True,
