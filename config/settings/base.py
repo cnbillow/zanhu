@@ -109,6 +109,7 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = 'news:list'  # 登录跳转配置
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = 'account_login'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # PASSWORDS
 # ------------------------------------------------------------------------------

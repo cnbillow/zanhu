@@ -26,64 +26,67 @@
 
 </head>
 <body>
-<nav class="navbar fixed-top navbar-expand-sm bg-light">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'news:list' %}">赞 乎&nbsp;&nbsp;</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="mainMenu">
+{% cache 3600 sidebar request.user.username %}
+    <nav class="navbar fixed-top navbar-expand-sm bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'news:list' %}">赞 乎&nbsp;&nbsp;</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainMenu">
 
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="btn-sm" href="{% url 'notifications:latest_notifications' %}" id="notifications" data-toggle="popover" data-title="通知">
-                        <i class="fa fa-bell-o" aria-hidden="true"></i>
-                    </a>
-                </li>
-            </ul>&nbsp;&nbsp;
-
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'news:list' %}">&nbsp;&nbsp;首页</a></li>&nbsp;&nbsp;
-                <li class="nav-item"><a class="nav-link" href="{% url 'articles:list' %}">文章</a></li>&nbsp;&nbsp;
-                <li class="nav-item"><a class="nav-link" href="{% url 'qa:unanswered_q' %}">问答</a></li>&nbsp;&nbsp;
-                <li class="nav-item"><a class="nav-link" href="{% url 'messager:messages_list' %}">私信</a></li>&nbsp;&nbsp;
-            </ul>
-
-            <form role="search" action="{% url 'haystack_search' %}">
-                <div class="input-group">
-                    <input name="q" type="search" id="searchInput" class="form-control" placeholder="搜索" aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></button>
-                    </div>
-                </div>
-            </form>
-            {% if request.user.is_authenticated %}
                 <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                           aria-expanded="false">
-                            {% thumbnail request.user.picture "x40" as im %}
-                                <img src="{{ im.url }}" style="border-radius: 50%;" alt="用户头像" class="user-image">
-                                {% empty %}
-                                <img src="{% static 'img/user.png' %}" height="40px" alt="没有头像"/>
-                            {% endthumbnail %}
-                            {{ request.user.username }}
+                    <li class="nav-item">
+                        <a class="btn-sm" href="{% url 'notifications:latest_notifications' %}" id="notifications" data-toggle="popover"
+                           data-title="通知">
+                            <i class="fa fa-bell-o" aria-hidden="true"></i>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'users:detail' request.user.username %}">
-                                <i class="fa fa-cogs fa-fw" aria-hidden="true"></i> 设置</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'account_logout' %}">
-                                <i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> 退出</a>
-                        </div>
                     </li>
+                </ul>&nbsp;&nbsp;
+
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'news:list' %}">&nbsp;&nbsp;首页</a></li>&nbsp;&nbsp;
+                    <li class="nav-item"><a class="nav-link" href="{% url 'articles:list' %}">文章</a></li>&nbsp;&nbsp;
+                    <li class="nav-item"><a class="nav-link" href="{% url 'qa:unanswered_q' %}">问答</a></li>&nbsp;&nbsp;
+                    <li class="nav-item"><a class="nav-link" href="{% url 'messager:messages_list' %}">私信</a></li>&nbsp;&nbsp;
                 </ul>
-            {% endif %}
+
+                <form role="search" action="{% url 'haystack_search' %}">
+                    <div class="input-group">
+                        <input name="q" type="search" id="searchInput" class="form-control" placeholder="搜索" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </form>
+                {% if request.user.is_authenticated %}
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="false">
+                                {% thumbnail request.user.picture "x40" as im %}
+                                    <img src="{{ im.url }}" style="border-radius: 50%;" alt="用户头像" class="user-image">
+                                    {% empty %}
+                                    <img src="{% static 'img/user.png' %}" height="40px" alt="没有头像"/>
+                                {% endthumbnail %}
+                                {{ request.user.username }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'users:detail' request.user.username %}">
+                                    <i class="fa fa-cogs fa-fw" aria-hidden="true"></i> 设置</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'account_logout' %}">
+                                    <i class="fa fa-sign-out fa-fw" aria-hidden="true"></i> 退出</a>
+                            </div>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
+{% endcache %}
 <div class="mb-3"></div>
 <div class="container">
     {% if messages %}
