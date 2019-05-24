@@ -294,6 +294,7 @@ MARKDOWNX_IMAGE_MAX_SIZE = {'size': (1000, 1000), 'quality': 100}  # 图片最�
 # ASGI server setup
 ASGI_APPLICATION = 'config.routing.application'
 
+# 频道层的缓存
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -313,6 +314,7 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'zanhu',
     },
 }
+
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 20  # 分页
 # 实时信号量处理器，模型类中数据添加、更新、删除时自动更新索引
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
