@@ -122,10 +122,6 @@ class Question(models.Model):
         """反对的用户"""
         return [vote.user for vote in self.votes.filter(value=False)]
 
-    def get_accepted_answer(self):
-        """被接受的回答"""
-        return Answer.objects.get(question=self, is_answer=True)
-
 
 @python_2_unicode_compatible
 class Answer(models.Model):
@@ -162,10 +158,6 @@ class Answer(models.Model):
     def get_downvoters(self):
         """反对的用户"""
         return [vote.user for vote in self.votes.filter(value=False)]
-
-    def get_accepted_answer(self):
-        """被接受的回答"""
-        return Answer.objects.get(question=self, is_answer=True)
 
     def accept_answer(self):
         """接受回答"""

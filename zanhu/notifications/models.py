@@ -71,7 +71,7 @@ class Notification(models.Model):
                               on_delete=models.CASCADE, verbose_name="触发者")
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=False,
                                   related_name="notifications", on_delete=models.CASCADE, verbose_name='接收者')
-    unread = models.BooleanField(default=True, db_index=True, verbose_name='未读')
+    unread = models.BooleanField(default=True, verbose_name='未读')
     slug = models.SlugField(max_length=80, null=True, blank=True, verbose_name='(URL)别名')
     verb = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, verbose_name="通知类别")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
